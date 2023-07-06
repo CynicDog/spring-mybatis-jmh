@@ -1,0 +1,41 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.web.mapper.EmployeeDao">
+
+    <select id="getEmployeesByJobId" parameterType="string" resultType="Employee">
+        select
+            employee_id     as id,
+            first_name      as firstName,
+            last_name       as lastName,
+            email,
+            phone_number    as phoneNumber,
+            hire_date       as hireDate,
+            job_id          as "job.id",
+            salary,
+            commission_pct  as commissionPct,
+            manager_id      as "manager.id",
+            department_id   as "department.id"
+        from
+            employees
+        where
+            job_id = #{job_id}
+    </select>
+
+    <select id="getEmployeeById" parameterType="int" resultType="Employee">
+        select
+            employee_id     as id,
+            first_name      as firstName,
+            last_name       as lastName,
+            email,
+            phone_number    as phoneNumber,
+            hire_date       as hireDate,
+            job_id          as "job.id",
+            salary,
+            commission_pct  as commissionPct,
+            manager_id      as "manager.id",
+            department_id   as "department.id"
+        from
+            employees
+        where
+            employee_id = #{employee_id}
+    </select>
+</mapper>

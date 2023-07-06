@@ -1,0 +1,27 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hr
+    username: root
+    password:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+logging:
+  level:
+    root: info
+    '[org.springframework.web]': trace
+    '[com.example.web.mapper]': trace
+
+mybatis:
+  mapper-locations:
+    - META-INF/mybatis/mappers/*.xml
+  type-aliases-package: com.example.web.vo
+  configuration:
+    jdbc-type-for-null: 'NULL'
+    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
