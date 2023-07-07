@@ -80,12 +80,20 @@
                 valueA = parseInt(valueA);
                 valueB = parseInt(valueB);
 
-                if (ascending) { return valueA - valueB; }
-                else { return valueB - valueA; }
+                if (ascending) {
+                    return valueA - valueB;
+                }
+                else {
+                    return valueB - valueA;
+                }
             }
 
-            if (ascending) { return valueA.localeCompare(valueB); }
-            else { return valueB.localeCompare(valueA); }
+            if (ascending) {
+                return valueA.localeCompare(valueB);
+            }
+            else {
+                return valueB.localeCompare(valueA);
+            }
         });
 
         table.querySelector('tbody').innerHTML = '';
