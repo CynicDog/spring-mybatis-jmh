@@ -24,4 +24,9 @@
         where
             job_id = #{job_id}
     </select>
+
+    <insert id="insertJob" parameterType="Job">
+        insert into jobs (job_id, job_title, min_salary, max_salary)
+        values (#{id}, #{title}, #{minSalary}, #{maxSalary})
+    </insert>
 </mapper>

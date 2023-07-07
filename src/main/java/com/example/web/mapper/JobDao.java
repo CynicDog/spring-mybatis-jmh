@@ -14,4 +14,6 @@ public interface JobDao {
     List<Job> getAllJobs();
 
     Job getJobById(@Param("job_id") String id);
+
+    void insertJob(Job job);
 }
