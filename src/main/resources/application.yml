@@ -15,8 +15,8 @@ spring:
 logging:
   level:
     root: info
-    '[org.springframework.web]': trace
-    '[com.example.web.mapper]': trace
+#    '[org.springframework.web]': trace
+#    '[com.example.web.mapper]': trace
 
 mybatis:
   mapper-locations:
