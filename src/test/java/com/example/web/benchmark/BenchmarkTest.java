@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class BenchmarkTest {
     private HumanResourceService humanResourceService;
     private ConfigurableApplicationContext context;
-    @Param({"3", "5"})
+    @Param({"2", "4", "8", "16"})
     public int iterations;
 
     @Setup(Level.Invocation)
@@ -37,11 +37,20 @@ public class BenchmarkTest {
 
     @Benchmark @BenchmarkMode(Mode.AverageTime)
     @Fork(warmups = 1, value = 1)
-    @Warmup(batchSize = -1, iterations = 2, time = 10, timeUnit = TimeUnit.MILLISECONDS)
-    @Measurement(batchSize = -1, iterations = 5, time = 50, timeUnit = TimeUnit.MILLISECONDS)
+    @Warmup(batchSize = -1, iterations = 3, time = 10, timeUnit = TimeUnit.MILLISECONDS)
+    @Measurement(batchSize = -1, iterations = 15, time = 50, timeUnit = TimeUnit.MILLISECONDS)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public void test() throws Exception {
+    public void testGetEmployeesByJobId() throws Exception {
         humanResourceService.getEmployeesByJobId("ST_CLERK", FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
+    }
+
+    @Benchmark @BenchmarkMode(Mode.AverageTime)
+    @Fork(warmups = 1, value = 1)
+    @Warmup(batchSize = -1, iterations = 3, time = 10, timeUnit = TimeUnit.MILLISECONDS)
+    @Measurement(batchSize = -1, iterations = 10, time = 50, timeUnit = TimeUnit.MILLISECONDS)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public void testGetAllEmployees() throws Exception {
+        humanResourceService.getAllEmployees(FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
     }
 
     @Test
