@@ -21,7 +21,7 @@ def dummy(id: int, job: str, manager: int, dept: int):
     return f"({id},'{first_name}','{last_name}','{email}','{phone}','{date}','{job}',{salary},{commission_pct},{manager},{dept})"
 
 result = []
-for i in range(1, 5000):
+for i in range(300, 5000):
     result.append(dummy(i, "ST_CLERK", 121, 50))
 
 insert_statement = "INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id)\nVALUES\n"
