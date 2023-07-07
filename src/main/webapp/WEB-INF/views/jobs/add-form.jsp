@@ -21,19 +21,19 @@
                 <div class="card-header">Registration</div>
                 <div class="card-body">
                     <form method="post" action="add">
-                        <div class="form-group mb-2">
+                        <div class="form-group my-1">
                             <label class="form-label">Identifier</label>
                             <input type="text" class="form-control" name="id">
                         </div>
-                        <div class="form-group mb-2">
+                        <div class="form-group my-1">
                             <label class="form-label">Title</label>
                             <input type="text" class="form-control" name="title">
                         </div>
-                        <div class="form-group mb-2">
+                        <div class="form-group my-1">
                             <label class="form-label">Minimum Salary</label>
                             <input type="text" class="form-control" name="minSalary">
                         </div>
-                        <div class="form-group mb-2">
+                        <div class="form-group my-1">
                             <label class="form-label">Maximum Salary</label>
                             <input type="text" class="form-control" name="maxSalary">
                         </div>

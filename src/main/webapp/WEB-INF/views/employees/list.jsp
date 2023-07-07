@@ -19,17 +19,35 @@
             <div class="card shadow">
                 <div class="card-header">
                     Employees
-                    <a href="add" class="btn btn-primary btn-sm">add new employee</a>
+                    <a href="add" class="btn btn-primary btn-sm float-end">add new employee</a>
                 </div>
                 <div class="card-body">
-
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Identifier</th>
+                                <th>Name</th>
+                                <th>Joined Date</th>
+                                <th>Job</th>
+                                <th>Department</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="employee" items="${employees}">
+                            <tr>
+                                <td>${employee.id}</td>
+                                <td>${employee.firstName}</td>
+                                <td>${employee.hireDate}</td>
+                                <td>${employee.job.title}</td>
+                                <td>${employee.department.name}</td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-
     </div>
-
-
 </div>
 </body>
 </html>
