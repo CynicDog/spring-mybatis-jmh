@@ -38,4 +38,53 @@
         where
             employee_id = #{employee_id}
     </select>
+
+    <select id="getAllEmployees">
+        select
+            employee_id     as id,
+            first_name      as firstName,
+            last_name       as lastName,
+            email,
+            phone_number    as phoneNumber,
+            hire_date       as hireDate,
+            job_id          as "job.id",
+            salary,
+            commission_pct  as commissionPct,
+            manager_id      as "manager.id",
+            department_id   as "department.id"
+        from
+            employees
+        order by
+            employee_id
+    </select>
+
+    <select id="getEmployeesByDepartmentId" parameterType="int" resultType="Employee">
+        select
+            employee_id     as id,
+            first_name      as firstName,
+            last_name       as lastName,
+            email,
+            phone_number    as phoneNumber,
+            hire_date       as hireDate,
+            job_id          as "job.id",
+            salary,
+            commission_pct  as commissionPct,
+            manager_id      as "manager.id",
+            department_id   as "department.id"
+        from
+            employees
+        where
+            department_id = #{department_id}
+        order by
+            first_name, last_name
+    </select>
+
+    <insert id="insertEmployee" parameterType="Employee">
+        insert into employees (
+            first_name, last_name, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id
+        )
+        values (
+            #{firstName}, #{lastName}, #{email}, #{phoneNumber}, #{hireDate}, #{job.id}, #{commissionPct}, #{manager.id}, #{department.id}
+        )
+    </insert>
 </mapper>

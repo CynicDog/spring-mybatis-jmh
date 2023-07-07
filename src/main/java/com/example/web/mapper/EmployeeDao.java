@@ -13,5 +13,11 @@ public interface EmployeeDao {
 
     List<Employee> getEmployeesByJobId(@Param("job_id") String jobId);
 
+    List<Employee> getEmployeesByDepartmentId(@Param("department_id") int departmentId);
+
     Employee getEmployeeById(@Param("employee_id") int id);
+
+    List<Employee> getAllEmployees();
+
+    void insertEmployee(Employee employee);
 }
