@@ -21,7 +21,7 @@
             <div class="card shadow">
                 <div class="card-header">Registration</div>
                 <div class="card-body">
-                    <form class="post" action="add">
+                    <form method="post" action="add">
                         <div class="row mb-3">
                             <label class="col-sm-1 col-form-label text-end">Name</label>
                             <div class="col-5 mb-3">
