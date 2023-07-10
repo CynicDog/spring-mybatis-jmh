@@ -52,7 +52,7 @@ CREATE TABLE jobs (
 );
 
 CREATE TABLE employees (
-                           employee_id INT (11) UNSIGNED NOT NULL,
+                           employee_id INT (11) UNSIGNED auto_increment NOT NULL,
                            first_name VARCHAR(20),
                            last_name VARCHAR(25) NOT NULL,
                            email VARCHAR(25) NOT NULL,

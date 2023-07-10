@@ -1,6 +1,6 @@
 import random
 
-def dummy(id: int, job: str, manager: int, dept: int):
+def dummy(job: str, manager: int, dept: int):
     salary = round(random.uniform(3000.00, 10000.00), 2)  # Random salary between 3000 and 10000
     commission_pct = round(random.uniform(0.0, 0.5), 2)  # Random commission percentage between 0 and 0.5
 
@@ -18,7 +18,7 @@ def dummy(id: int, job: str, manager: int, dept: int):
     day = random.randint(1, 28)
     date = f"{year}-{month:02d}-{day:02d}"
 
-    return f"({id},'{first_name}','{last_name}','{email}','{phone}','{date}','{job}',{salary},{commission_pct},{manager},{dept})"
+    return f"('{first_name}','{last_name}','{email}','{phone}','{date}','{job}',{salary},{commission_pct},{manager},{dept})"
 
 job_manager_dept = [
     ("IT_PROG", 102, 60),
@@ -56,9 +56,9 @@ job_manager_dept = [
 result = []
 for i in range(500, 55500):
     job, manager, dept = random.choice(job_manager_dept)
-    result.append(dummy(i, job, manager, dept))
+    result.append(dummy(job, manager, dept))
 
-insert_statement = "INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id)\nVALUES\n"
+insert_statement = "INSERT INTO employees (first_name, last_name, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id)\nVALUES\n"
 
 with open('population.txt', 'w') as f:
     f.write(insert_statement + ",\n".join(result) + ";")
