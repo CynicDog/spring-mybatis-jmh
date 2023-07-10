@@ -5,20 +5,25 @@ import com.example.web.controller.command.JobCommand;
 import com.example.web.mapper.DepartmentDao;
 import com.example.web.mapper.EmployeeDao;
 import com.example.web.mapper.JobDao;
+import com.example.web.model.EmployeeResponse;
 import com.example.web.util.FetchType;
+import com.example.web.util.Pagination;
 import com.example.web.vo.Department;
 import com.example.web.vo.Employee;
 import com.example.web.vo.Job;
-import org.springframework.beans.BeanUtils;
+import org.jboss.logging.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class HumanResourceService {
+
+    private final Logger logger = Logger.getLogger(HumanResourceService.class);
 
     private final DepartmentDao departmentDao;
     private final EmployeeDao employeeDao;
@@ -41,14 +46,13 @@ public class HumanResourceService {
     /**
      * Retrieves a list of employees by job ID, with options to fetch associated properties.
      *
-     * @param jobId       The ID of the job.
+     * @param jobId The ID of the job.
      * @param arg1, arg2, arg3
-     *                    The fetch types for associated properties.
-     *                    Use `FetchType.EAGER` to fetch the associated property on the spot,
-     *                    or `FetchType.LAZY` to not fetch the associated property immediately.
-     *                    You can pass multiple fetch types for different properties,
-     *                    but be carefully aware of the order of parameters when passing in arguments.
-     *
+     *              The fetch types for associated properties.
+     *              Use `FetchType.EAGER` to fetch the associated property on the spot,
+     *              or `FetchType.LAZY` to not fetch the associated property immediately.
+     *              You can pass multiple fetch types for different properties,
+     *              but be carefully aware of the order of parameters when passing in arguments.
      * @return The list of employees with fully populated associated properties based on the fetch types.
      */
     public List<Employee> getEmployeesByJobId(String jobId, FetchType arg1, FetchType arg2, FetchType arg3) {
@@ -155,5 +159,48 @@ public class HumanResourceService {
         }
 
         employeeDao.insertEmployee(employee);
+    }
+
+    public EmployeeResponse getEmployeesPaginated(Map<String, Object> params, FetchType arg1, FetchType arg2, FetchType arg3) {
+        EmployeeResponse employeeResponse = new EmployeeResponse();
+
+        int totalRows = employeeDao.getTotalRows(params);
+
+        int rows = (int) params.get("rows");
+        int page = (int) params.get("page");
+
+        Pagination pagination = new Pagination(rows, page, totalRows);
+
+        int begin = pagination.getBegin();
+        int end = pagination.getEnd();
+
+        params.put("begin", begin);
+        params.put("end", end);
+
+        employeeResponse.setPagination(pagination);
+
+        List<Employee> employees = employeeDao.getEmployeesPaginated(params);
+
+        List<Employee> employeesPopulated = employees.stream()
+                .map(employee -> {
+                    if (employee.getJob() != null && FetchType.EAGER.equals(arg1)) {
+                        employee.setJob(jobDao.getJobById(employee.getJob().getId()));
+                    }
+                    return employee;
+                }).map(employee -> {
+                    if (employee.getManager() != null && FetchType.EAGER.equals(arg2)) {
+                        employee.setManager(employeeDao.getEmployeeById(employee.getManager().getId()));
+                    }
+                    return employee;
+                }).map(employee -> {
+                    if (employee.getDepartment() != null && FetchType.EAGER.equals(arg3)) {
+                        employee.setDepartment(departmentDao.getDepartmentById(employee.getDepartment().getId()));
+                    }
+                    return employee;
+                }).collect(Collectors.toList());
+
+        employeeResponse.setEmployees(employeesPopulated);
+
+        return employeeResponse;
     }
 }

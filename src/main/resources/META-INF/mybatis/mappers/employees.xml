@@ -87,4 +87,122 @@
             #{firstName}, #{lastName}, #{email}, #{phoneNumber}, #{hireDate}, #{job.id}, #{salary}, #{commissionPct}, #{manager.id}, #{department.id}
         )
     </insert>
+
+    <select id="getTotalRows" parameterType="map" resultType="int">
+        select
+            count(*)
+        from
+            employees
+        <where>
+            <if test="opt == 'name' and keyword != ''">
+                first_name = #{keyword} or last_name = #{keyword}
+            </if>
+            <if test="opt == 'job' and keyword != ''">
+                job_id = UPPER(#{keyword})
+            </if>
+            <if test="opt == 'phone' and keyword != ''">
+                phone_number = #{keyword}
+            </if>
+            <if test="opt == 'dept' and keyword != ''">
+                department_id in (
+                    select department_id from departments where department_name = #{keyword}
+                )
+            </if>
+        </where>
+    </select>
+
+    <select id="getEmployeesPaginated" parameterType="map" resultType="Employee">
+        SELECT *
+        FROM (
+            SELECT
+                E.employee_id       AS id,
+                E.first_name        AS firstName,
+                E.last_name         AS lastName,
+                E.email,
+                E.phone_number      AS phoneNumber,
+                E.hire_date         AS hireDate,
+                E.job_id            AS `job.id`,
+                E.salary,
+                E.commission_pct    AS commissionPct,
+                E.manager_id        AS `manager.id`,
+                E.department_id     AS `department.id`,
+                CASE
+                    WHEN #{sort} = 'id' THEN row_number() OVER (ORDER BY E.employee_id ASC)
+                    WHEN #{sort} = 'name' THEN row_number() OVER (ORDER BY E.first_name ASC)
+                    WHEN #{sort} = 'date' THEN row_number() OVER (ORDER BY E.hire_date ASC)
+                    WHEN #{sort} = 'job' THEN row_number() OVER (ORDER BY E.job_id ASC)
+                    WHEN #{sort} = 'dept' THEN row_number() OVER (ORDER BY E.department_id ASC)
+                END AS rownum
+            FROM employees E
+            <where>
+                <if test="opt == 'name' and keyword != ''">
+                    E.first_name = #{keyword} OR E.last_name = #{keyword}
+                </if>
+                <if test="opt == 'job' and keyword != ''">
+                    E.job_id = UPPER(#{keyword})
+                </if>
+                <if test="opt == 'phone' and keyword != ''">
+                    E.phone_number = #{keyword}
+                </if>
+                <if test="opt == 'dept' and keyword != ''">
+                    E.department_id IN (
+                    SELECT department_id FROM departments WHERE department_name = UPPER(#{keyword})
+                    )
+                </if>
+            </where>
+        ) AS subquery
+        WHERE rownum BETWEEN #{begin} AND #{end}
+    </select>
+
+<!--    <select id="getEmployeesPaginated" parameterType="map" resultType="Employee">-->
+<!--        select-->
+<!--            *-->
+<!--        from (-->
+<!--            select-->
+<!--                E.employee_id     as id,-->
+<!--                E.first_name      as firstName,-->
+<!--                E.last_name       as lastName,-->
+<!--                E.email,-->
+<!--                E.phone_number    as phoneNumber,-->
+<!--                E.hire_date       as hireDate,-->
+<!--                E.job_id          as "job.id",-->
+<!--                E.salary,-->
+<!--                E.commission_pct  as commissionPct,-->
+<!--                E.manager_id      as "manager.id",-->
+<!--                E.department_id   as "department.id"-->
+<!--                <choose>-->
+<!--                    <when test="params.sort == id">-->
+<!--                        row_number() over (order by E.employee_id asc) rownum-->
+<!--                    </when>-->
+<!--                    <when test="params.sort == name">-->
+<!--                        row_number() over (order by E.first_name asc) rownum-->
+<!--                    </when>-->
+<!--                    <when test="params.sort == date">-->
+<!--                        row_number() over (order by E.hire_date asc) rownum-->
+<!--                    </when>-->
+<!--                    <when test="params.sort == job">-->
+<!--                        row_number() over (order by E.job_id asc) rownum-->
+<!--                    </when>-->
+<!--                    <when test="params.sort == dept">-->
+<!--                        row_number() over (order by E.department_id asc) rownum-->
+<!--                    </when>-->
+<!--                </choose>-->
+<!--            from employees E-->
+<!--&lt;!&ndash;            right join departments D on D.department_id = E.department_id&ndash;&gt;-->
+<!--            <where>-->
+<!--                <choose>-->
+<!--                    <when test="params.opt == 'name'"> E.first_name = INITCAP(#{params.keyword}) or last_name = INITCAP(#{params.keyword}) </when>-->
+<!--                    <when test="params.opt == 'job'"> E.job_id = UPPER(#{params.keyword}) </when>-->
+<!--                    <when test="params.opt == 'phone'"> E.phone_number = #{params.keyword} </when>-->
+<!--                    <when test="params.opt == 'dept'">-->
+<!--                        E.department_id in (-->
+<!--                            select department_id from departments where department_name = INITCAP(#{params.keyword})-->
+<!--                        )-->
+<!--                    </when>-->
+<!--                </choose>-->
+<!--            </where>-->
+<!--        )-->
+<!--        where-->
+<!--            rownum between #{params.begin} and #{params.end}-->
+<!--    </select>-->
 </mapper>

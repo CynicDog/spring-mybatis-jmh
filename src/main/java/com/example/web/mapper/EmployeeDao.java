@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Mapper
@@ -20,4 +21,7 @@ public interface EmployeeDao {
     List<Employee> getAllEmployees();
 
     void insertEmployee(Employee employee);
+
+    int getTotalRows(Map<String, Object> params);
+    List<Employee> getEmployeesPaginated(Map<String, Object> params);
 }
