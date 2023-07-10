@@ -13,4 +13,8 @@ public class Job {
     private String title;
     private Integer minSalary;
     private Integer maxSalary;
+
+    public Job(String id) {
+        this.id = id;
+    }
 }
