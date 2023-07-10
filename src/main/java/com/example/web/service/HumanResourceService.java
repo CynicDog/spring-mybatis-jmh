@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.web.util.FetchType.matchesFetchType;
-
 @Service
 @Transactional
 public class HumanResourceService {
@@ -44,7 +42,8 @@ public class HumanResourceService {
      * Retrieves a list of employees by job ID, with options to fetch associated properties.
      *
      * @param jobId       The ID of the job.
-     * @param fetchTypes  The fetch types for associated properties.
+     * @param arg1, arg2, arg3
+     *                    The fetch types for associated properties.
      *                    Use `FetchType.EAGER` to fetch the associated property on the spot,
      *                    or `FetchType.LAZY` to not fetch the associated property immediately.
      *                    You can pass multiple fetch types for different properties,
@@ -52,22 +51,22 @@ public class HumanResourceService {
      *
      * @return The list of employees with fully populated associated properties based on the fetch types.
      */
-    public List<Employee> getEmployeesByJobId(String jobId, FetchType... fetchTypes) {
+    public List<Employee> getEmployeesByJobId(String jobId, FetchType arg1, FetchType arg2, FetchType arg3) {
         List<Employee> employees = employeeDao.getEmployeesByJobId(jobId);
 
         List<Employee> employeesPopulated = employees.stream()
                 .map(employee -> {
-                    if (employee.getJob() != null  && matchesFetchType(fetchTypes, FetchType.EAGER)) {
+                    if (employee.getJob() != null && FetchType.EAGER.equals(arg1)) {
                         employee.setJob(jobDao.getJobById(employee.getJob().getId()));
                     }
                     return employee;
                 }).map(employee -> {
-                    if (employee.getManager() != null && matchesFetchType(fetchTypes, FetchType.EAGER)) {
+                    if (employee.getManager() != null && FetchType.EAGER.equals(arg2)) {
                         employee.setManager(employeeDao.getEmployeeById(employee.getManager().getId()));
                     }
                     return employee;
                 }).map(employee -> {
-                    if (employee.getDepartment() != null && matchesFetchType(fetchTypes, FetchType.EAGER)) {
+                    if (employee.getDepartment() != null && FetchType.EAGER.equals(arg3)) {
                         employee.setDepartment(departmentDao.getDepartmentById(employee.getDepartment().getId()));
                     }
                     return employee;
@@ -85,23 +84,23 @@ public class HumanResourceService {
         jobDao.insertJob(job);
     }
 
-    public List<Employee> getAllEmployees(FetchType... fetchTypes) {
+    public List<Employee> getAllEmployees(FetchType arg1, FetchType arg2, FetchType arg3) {
 
         List<Employee> employees = employeeDao.getAllEmployees();
 
         List<Employee> employeesPopulated = employees.stream()
                 .map(employee -> {
-                    if (employee.getJob() != null  && matchesFetchType(fetchTypes, FetchType.EAGER)) {
+                    if (employee.getJob() != null && FetchType.EAGER.equals(arg1)) {
                         employee.setJob(jobDao.getJobById(employee.getJob().getId()));
                     }
                     return employee;
                 }).map(employee -> {
-                    if (employee.getManager() != null && matchesFetchType(fetchTypes, FetchType.EAGER)) {
+                    if (employee.getManager() != null && FetchType.EAGER.equals(arg2)) {
                         employee.setManager(employeeDao.getEmployeeById(employee.getManager().getId()));
                     }
                     return employee;
                 }).map(employee -> {
-                    if (employee.getDepartment() != null && matchesFetchType(fetchTypes, FetchType.EAGER)) {
+                    if (employee.getDepartment() != null && FetchType.EAGER.equals(arg3)) {
                         employee.setDepartment(departmentDao.getDepartmentById(employee.getDepartment().getId()));
                     }
                     return employee;
@@ -111,23 +110,23 @@ public class HumanResourceService {
         return employeesPopulated;
     }
 
-    public List<Employee> getEmployeesByDepartmentId(int department_id, FetchType... fetchTypes) {
+    public List<Employee> getEmployeesByDepartmentId(int department_id, FetchType arg1, FetchType arg2, FetchType arg3) {
 
         List<Employee> employees = employeeDao.getEmployeesByDepartmentId(department_id);
 
         List<Employee> employeesPopulated = employees.stream()
                 .map(employee -> {
-                    if (employee.getJob() != null && matchesFetchType(fetchTypes, FetchType.EAGER)) {
+                    if (employee.getJob() != null && FetchType.EAGER.equals(arg1)) {
                         employee.setJob(jobDao.getJobById(employee.getJob().getId()));
                     }
                     return employee;
                 }).map(employee -> {
-                    if (employee.getManager() != null && matchesFetchType(fetchTypes, FetchType.EAGER)) {
+                    if (employee.getManager() != null && FetchType.EAGER.equals(arg2)) {
                         employee.setManager(employeeDao.getEmployeeById(employee.getManager().getId()));
                     }
                     return employee;
                 }).map(employee -> {
-                    if (employee.getDepartment() != null && matchesFetchType(fetchTypes, FetchType.EAGER)) {
+                    if (employee.getDepartment() != null && FetchType.EAGER.equals(arg3)) {
                         employee.setDepartment(departmentDao.getDepartmentById(employee.getDepartment().getId()));
                     }
                     return employee;
@@ -140,10 +139,21 @@ public class HumanResourceService {
 
 //        Employee employee = new Employee();
 //        BeanUtils.copyProperties(employeeCommand, employee);
-//        employee.setJob();
-//        employee.setManager();
-//        employee.setDepartment();
 
-//        employeeDao.insertEmployee(employee);
+        Employee employee = employeeCommand.toEmployee();
+
+        if (employeeCommand.getJobId() != null) {
+            employee.setJob(new Job(employeeCommand.getJobId()));
+        }
+
+        if (employeeCommand.getManagerId() != null) {
+            employee.setManager(new Employee(employeeCommand.getManagerId()));
+        }
+
+        if (employeeCommand.getDepartmentId() != null) {
+            employee.setDepartment(new Department(employeeCommand.getDepartmentId()));
+        }
+
+        employeeDao.insertEmployee(employee);
     }
 }
