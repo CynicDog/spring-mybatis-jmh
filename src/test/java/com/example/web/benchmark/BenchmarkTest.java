@@ -9,6 +9,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
@@ -17,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class BenchmarkTest {
     private HumanResourceService humanResourceService;
     private ConfigurableApplicationContext context;
-    @Param({"2", "4", "8", "16"})
+    @Param({"2", "4"})
     public int iterations;
 
     @Setup(Level.Invocation)
@@ -35,13 +37,39 @@ public class BenchmarkTest {
         humanResourceService = context.getBean(HumanResourceService.class);
     }
 
+//    @Benchmark @BenchmarkMode(Mode.AverageTime)
+//    @Fork(warmups = 1, value = 1)
+//    @Warmup(batchSize = -1, iterations = 3, time = 10, timeUnit = TimeUnit.MILLISECONDS)
+//    @Measurement(batchSize = -1, iterations = 15, time = 50, timeUnit = TimeUnit.MILLISECONDS)
+//    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+//    public void testGetEmployeesByJobId() throws Exception {
+//        humanResourceService.getEmployeesByJobId("ST_CLERK", FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
+//    }
+//
+//    @Benchmark @BenchmarkMode(Mode.AverageTime)
+//    @Fork(warmups = 1, value = 1)
+//    @Warmup(batchSize = -1, iterations = 3, time = 10, timeUnit = TimeUnit.MILLISECONDS)
+//    @Measurement(batchSize = -1, iterations = 10, time = 50, timeUnit = TimeUnit.MILLISECONDS)
+//    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+//    public void testGetAllEmployees() throws Exception {
+//        humanResourceService.getAllEmployees(FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
+//    }
+
     @Benchmark @BenchmarkMode(Mode.AverageTime)
     @Fork(warmups = 1, value = 1)
     @Warmup(batchSize = -1, iterations = 3, time = 10, timeUnit = TimeUnit.MILLISECONDS)
-    @Measurement(batchSize = -1, iterations = 15, time = 50, timeUnit = TimeUnit.MILLISECONDS)
+    @Measurement(batchSize = -1, iterations = 10, time = 50, timeUnit = TimeUnit.MILLISECONDS)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public void testGetEmployeesByJobId() throws Exception {
-        humanResourceService.getEmployeesByJobId("ST_CLERK", FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
+    public void testGetEmployeesPaginated() throws Exception {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("sort", "id");
+        params.put("rows", 50000);
+        params.put("page", 1);
+        params.put("opt", "");
+        params.put("keyword", "");
+
+        humanResourceService.getEmployeesPaginated(params, FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
     }
 
     @Benchmark @BenchmarkMode(Mode.AverageTime)
@@ -49,8 +77,16 @@ public class BenchmarkTest {
     @Warmup(batchSize = -1, iterations = 3, time = 10, timeUnit = TimeUnit.MILLISECONDS)
     @Measurement(batchSize = -1, iterations = 10, time = 50, timeUnit = TimeUnit.MILLISECONDS)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public void testGetAllEmployees() throws Exception {
-        humanResourceService.getAllEmployees(FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
+    public void testGetEmployeesPaginatedJoined() throws Exception {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("sort", "id");
+        params.put("rows", 50000);
+        params.put("page", 1);
+        params.put("opt", "");
+        params.put("keyword", "");
+
+        humanResourceService.getEmployeesPaginatedByJoin(params);
     }
 
     @Test

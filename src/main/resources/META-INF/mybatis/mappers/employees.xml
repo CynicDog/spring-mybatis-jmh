@@ -135,6 +135,68 @@
                 END AS rownum
             FROM employees E
             <where>
+
+                    E.first_name = #{keyword} OR E.last_name = #{keyword} OR E.city = #{keyword} OR E.foodCategory = #{keyword} OR OR OR
+
+                <if test="opt == 'job' and keyword != ''">
+                    E.job_id = UPPER(#{keyword})
+                </if>
+                <if test="opt == 'phone' and keyword != ''">
+                    E.phone_number = #{keyword}
+                </if>
+                <if test="opt == 'dept' and keyword != ''">
+                    E.department_id IN (
+                    SELECT department_id FROM departments WHERE department_name = UPPER(#{keyword})
+                    )
+                </if>
+            </where>
+        ) AS subquery
+        WHERE rownum BETWEEN #{begin} AND #{end}
+    </select>
+
+    <select id="getEmployeesPaginatedByJoin" parameterType="map" resultType="Employee">
+        SELECT *
+        FROM (
+            SELECT
+                E.employee_id       AS id,
+                E.first_name        AS firstName,
+                E.last_name         AS lastName,
+                E.email,
+                E.phone_number      AS phoneNumber,
+                E.hire_date         AS hireDate,
+                E.job_id            AS `job.id`,
+                J.job_title         AS `job.title`,
+                J.min_salary        AS `job.minSalary`,
+                J.max_salary        AS `job.maxSalary`,
+                E.salary,
+                E.commission_pct    AS commissionPct,
+                E.manager_id        AS `manager.id`,
+                M.first_name        AS `manager.firstName`,
+                M.last_name         AS `manager.lastName`,
+                M.email             AS `manager.email`,
+                M.phone_number      AS `manager.phoneNumber`,
+                M.hire_date         AS `manager.hireDate`,
+                M.job_id            AS `manager.job.id`,
+                M.salary            AS `manager.salary`,
+                M.commission_pct    AS `manager.commissionPct`,
+                M.manager_id        AS `manager.manager.id`,
+                M.department_id     AS `manager.department.id`,
+                E.department_id     AS `department.id`,
+                D.department_name   AS `department.name`,
+                D.manager_id        AS `department.manager.id`,
+                D.location_id       AS `department.loc`,
+                CASE
+                    WHEN #{sort} = 'id' THEN row_number() OVER (ORDER BY E.employee_id ASC)
+                    WHEN #{sort} = 'name' THEN row_number() OVER (ORDER BY E.first_name ASC)
+                    WHEN #{sort} = 'date' THEN row_number() OVER (ORDER BY E.hire_date ASC)
+                    WHEN #{sort} = 'job' THEN row_number() OVER (ORDER BY E.job_id ASC)
+                    WHEN #{sort} = 'dept' THEN row_number() OVER (ORDER BY E.department_id ASC)
+                END AS rownum
+            FROM employees E
+            INNER JOIN jobs J on J.job_id = E.job_id
+            INNER JOIN employees M on M.employee_id = E.manager_id
+            INNER JOIN departments D on D.department_id = E.department_id
+            <where>
                 <if test="opt == 'name' and keyword != ''">
                     E.first_name = #{keyword} OR E.last_name = #{keyword}
                 </if>
@@ -146,7 +208,7 @@
                 </if>
                 <if test="opt == 'dept' and keyword != ''">
                     E.department_id IN (
-                    SELECT department_id FROM departments WHERE department_name = UPPER(#{keyword})
+                        SELECT department_id FROM departments WHERE department_name = UPPER(#{keyword})
                     )
                 </if>
             </where>

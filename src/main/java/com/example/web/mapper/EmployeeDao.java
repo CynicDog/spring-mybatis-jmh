@@ -24,4 +24,6 @@ public interface EmployeeDao {
 
     int getTotalRows(Map<String, Object> params);
     List<Employee> getEmployeesPaginated(Map<String, Object> params);
+
+    List<Employee> getEmployeesPaginatedByJoin(Map<String, Object> params);
 }

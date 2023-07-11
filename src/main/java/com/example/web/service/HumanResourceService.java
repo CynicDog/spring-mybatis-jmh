@@ -203,4 +203,39 @@ public class HumanResourceService {
 
         return employeeResponse;
     }
+
+    public EmployeeResponse getEmployeesPaginatedByJoin(Map<String, Object> params) {
+        EmployeeResponse employeeResponse = new EmployeeResponse();
+
+        int totalRows = employeeDao.getTotalRows(params);
+
+        int rows = (int) params.get("rows");
+        int page = (int) params.get("page");
+
+        Pagination pagination = new Pagination(rows, page, totalRows);
+
+        int begin = pagination.getBegin();
+        int end = pagination.getEnd();
+
+        params.put("begin", begin);
+        params.put("end", end);
+
+        employeeResponse.setPagination(pagination);
+
+        List<Employee> employees = employeeDao.getEmployeesPaginatedByJoin(params);
+        employeeResponse.setEmployees(employees);
+
+        return employeeResponse;
+    }
+
+    public Department getDepartmentById(int departmentId, FetchType arg1) {
+
+        Department department = departmentDao.getDepartmentById(departmentId);
+
+        if (department.getManager() != null && FetchType.EAGER.equals(arg1)) {
+            department.setManager(employeeDao.getEmployeeById(department.getManager().getId()));
+        }
+
+        return department;
+    }
 }
