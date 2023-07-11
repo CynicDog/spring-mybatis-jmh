@@ -89,6 +89,32 @@
             </div>
         </div>
     </div>
+    <div class="row my-2">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header">Add in batch</div>
+                <div class="card-body">
+                    <form class="form" method="post" action="upload" enctype="multipart/form-data">
+                        <div class="row my-2">
+                            <label class="col-sm-1 col-form-label text-end">File Title</label>
+                            <div class="col-9 my-2">
+                                <input type="text" class="form-control" name="title">
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <label class="col-sm-1 col-form-label text-end my-1">File</label>
+                            <div class="col-9 my-1">
+                                <input type="file" accept=".xls, .xlsx" class="form-control" name="xlsfile"/>
+                            </div>
+                            <div class="col-2 text-center my-1">
+                                <button class="btn btn-primary">submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 <script>

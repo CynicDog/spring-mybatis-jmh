@@ -23,7 +23,7 @@ public class DepartmentController {
     @GetMapping("/list")
     public String list(Model model) {
 
-        List<Department> departments = humanResourceService.getAllDepartments();
+        List<Department> departments = humanResourceService.getAllDepartments(FetchType.EAGER);
         model.addAttribute("departments", departments);
 
         return "departments/list";

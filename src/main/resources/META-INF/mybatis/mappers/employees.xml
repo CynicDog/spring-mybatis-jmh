@@ -135,9 +135,9 @@
                 END AS rownum
             FROM employees E
             <where>
-
-                    E.first_name = #{keyword} OR E.last_name = #{keyword} OR E.city = #{keyword} OR E.foodCategory = #{keyword} OR OR OR
-
+                <if test="opt == 'name' and keyword != ''">
+                    E.first_name = #{keyword} OR E.last_name = #{keyword}
+                </if>
                 <if test="opt == 'job' and keyword != ''">
                     E.job_id = UPPER(#{keyword})
                 </if>

@@ -51,7 +51,7 @@ public class EmployeeController {
     @GetMapping("/add")
     public String addForm(Model model) {
 
-        List<Department> departments = humanResourceService.getAllDepartments();
+        List<Department> departments = humanResourceService.getAllDepartments(FetchType.EAGER);
         List<Job> jobs = humanResourceService.getAllJobs();
 
         model.addAttribute("departments", departments);
@@ -79,5 +79,14 @@ public class EmployeeController {
             return employees;
         }
         return null;
+    }
+
+    @GetMapping("/detail")
+    @ResponseBody
+    public Employee fetchEmployeeDetails(@RequestParam("id") int employeeId) {
+        // http 'http://localhost:8081/emp/detail?id=100'
+        Employee employee = humanResourceService.getEmployeeById(employeeId, FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
+
+        return employee;
     }
 }

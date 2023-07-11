@@ -35,8 +35,18 @@ public class HumanResourceService {
         this.jobDao = jobDao;
     }
 
-    public List<Department> getAllDepartments() {
-        return departmentDao.getAllDepartments();
+    public List<Department> getAllDepartments(FetchType arg1) {
+        List<Department> departments = departmentDao.getAllDepartments();
+
+        List<Department> departmentPopulated = departments.stream()
+                .map(department -> {
+                    if (department.getManager() != null && FetchType.EAGER.equals(arg1)) {
+                        department.setManager(employeeDao.getEmployeeById(department.getManager().getId()));
+                    }
+                    return department;
+                }).collect(Collectors.toList());
+
+        return departmentPopulated;
     }
 
     public List<Job> getAllJobs() {
@@ -237,5 +247,24 @@ public class HumanResourceService {
         }
 
         return department;
+    }
+
+    public Employee getEmployeeById(int employeeId, FetchType arg1, FetchType arg2, FetchType arg3) {
+
+        Employee employee = employeeDao.getEmployeeById(employeeId);
+
+        if (employee.getJob() != null && FetchType.EAGER.equals(arg1)) {
+            employee.setJob(jobDao.getJobById(employee.getJob().getId()));
+        }
+
+        if (employee.getManager() != null && FetchType.EAGER.equals(arg2)) {
+            employee.setManager(employeeDao.getEmployeeById(employee.getManager().getId()));
+        }
+
+        if (employee.getDepartment() != null && FetchType.EAGER.equals(arg3)) {
+            employee.setDepartment(departmentDao.getDepartmentById(employee.getDepartment().getId()));
+        }
+
+        return employee;
     }
 }
