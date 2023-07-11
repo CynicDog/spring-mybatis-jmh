@@ -94,7 +94,7 @@
             <div class="card shadow">
                 <div class="card-header">Add in batch</div>
                 <div class="card-body">
-                    <form class="form" method="post" action="upload" enctype="multipart/form-data">
+                    <form class="form" method="post" action="batch-upload" enctype="multipart/form-data">
                         <div class="row my-2">
                             <label class="col-sm-1 col-form-label text-end">File Title</label>
                             <div class="col-9 my-2">
@@ -104,7 +104,7 @@
                         <div class="row my-2">
                             <label class="col-sm-1 col-form-label text-end my-1">File</label>
                             <div class="col-9 my-1">
-                                <input type="file" accept=".xls, .xlsx" class="form-control" name="xlsfile"/>
+                                <input type="file" accept=".xls, .xlsx" class="form-control" name="multipartFile"/>
                             </div>
                             <div class="col-2 text-center my-1">
                                 <button class="btn btn-primary">submit</button>

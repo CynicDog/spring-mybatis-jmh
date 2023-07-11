@@ -74,6 +74,14 @@ CREATE TABLE job_history (
                              department_id INT (11) UNSIGNED NOT NULL
 );
 
+CREATE TABLE employee_files (
+                                file_id INT(5) PRIMARY KEY AUTO_INCREMENT,
+                                file_title VARCHAR(255) NOT NULL,
+                                file_name VARCHAR(255) NOT NULL,
+                                file_added CHAR(1) DEFAULT 'N',
+                                file_create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 ALTER TABLE job_history ADD UNIQUE INDEX (
                                           employee_id,
                                           start_date

@@ -1,8 +1,10 @@
 package com.example.web.service;
 
+import com.example.web.controller.command.EmployeeBatchFileCommand;
 import com.example.web.controller.command.EmployeeCommand;
 import com.example.web.controller.command.JobCommand;
 import com.example.web.mapper.DepartmentDao;
+import com.example.web.mapper.EmployeeBatchFileDao;
 import com.example.web.mapper.EmployeeDao;
 import com.example.web.mapper.JobDao;
 import com.example.web.model.EmployeeResponse;
@@ -10,11 +12,19 @@ import com.example.web.util.FetchType;
 import com.example.web.util.Pagination;
 import com.example.web.vo.Department;
 import com.example.web.vo.Employee;
+import com.example.web.vo.EmployeeBatchFile;
 import com.example.web.vo.Job;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jboss.logging.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,16 +33,21 @@ import java.util.stream.Collectors;
 @Transactional
 public class HumanResourceService {
 
+    @Value("${hr.employee.xls.save-directory}")
+    private String batchFileDirectory;
+
     private final Logger logger = Logger.getLogger(HumanResourceService.class);
 
     private final DepartmentDao departmentDao;
     private final EmployeeDao employeeDao;
     private final JobDao jobDao;
+    private final EmployeeBatchFileDao employeeBatchFileDao;
 
-    public HumanResourceService(DepartmentDao departmentDao, EmployeeDao employeeDao, JobDao jobDao) {
+    public HumanResourceService(DepartmentDao departmentDao, EmployeeDao employeeDao, JobDao jobDao, EmployeeBatchFileDao employeeBatchFileDao) {
         this.departmentDao = departmentDao;
         this.employeeDao = employeeDao;
         this.jobDao = jobDao;
+        this.employeeBatchFileDao = employeeBatchFileDao;
     }
 
     public List<Department> getAllDepartments(FetchType arg1) {
@@ -266,5 +281,56 @@ public class HumanResourceService {
         }
 
         return employee;
+    }
+
+    public void insertBatchFile(EmployeeBatchFileCommand employeeBatchFileCommand) throws Exception {
+
+        EmployeeBatchFile employeeBatchFile = employeeBatchFileCommand.toEmployeeBatchFile();
+
+        if (employeeBatchFile != null) {
+            employeeBatchFileDao.insertEmployeeBatchFile(employeeBatchFile);
+
+            File file = new File(batchFileDirectory, employeeBatchFile.getName());
+            employeeBatchFileCommand.getMultipartFile().transferTo(file);
+        }
+    }
+
+    public List<EmployeeBatchFile> getAllEmployeeFiles() {
+
+        return employeeBatchFileDao.getEmployeeBatchFiles();
+    }
+
+    public void registerEmployeeInBatch(int fileId) throws Exception {
+
+        EmployeeBatchFile employeeBatchFile = employeeBatchFileDao.getEmployeeBatchFileById(fileId);
+        String filename = employeeBatchFile.getName();
+
+        File file = new File(batchFileDirectory, filename);
+
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheet("Sheet1");
+
+        for (int idx = 1; idx <= sheet.getLastRowNum(); idx++) {
+            Row row = sheet.getRow(idx);
+
+            // TODO: Cannot get a STRING value from a NUMERIC cell [ java.lang.IllegalStateException: Cannot get a STRING value from a NUMERIC cell ]
+            String firstName = row.getCell(0).getStringCellValue();
+            String lastName = row.getCell(1).getStringCellValue();
+            String email = row.getCell(2).getStringCellValue();
+            String phoneNumber = row.getCell(3).getStringCellValue();
+            Date hireDate = row.getCell(4).getDateCellValue();
+            String jobId = row.getCell(5).getStringCellValue();
+            Double salary = Double.parseDouble(row.getCell(6).getStringCellValue());
+            Double commissionPct = row.getCell(7).getNumericCellValue();
+            int managerId = (int) row.getCell(8).getNumericCellValue();
+            int departmentId = (int) row.getCell(9).getNumericCellValue();
+
+            Employee employee = new Employee(firstName, lastName, email, phoneNumber, hireDate, salary, commissionPct);
+            employee.setJob(jobDao.getJobById(jobId));
+            employee.setManager(employeeDao.getEmployeeById(managerId));
+            employee.setDepartment(departmentDao.getDepartmentById(departmentId));
+
+            employeeDao.insertEmployee(employee);
+        }
     }
 }

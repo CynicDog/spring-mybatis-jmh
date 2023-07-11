@@ -1,11 +1,13 @@
 package com.example.web.controller;
 
+import com.example.web.controller.command.EmployeeBatchFileCommand;
 import com.example.web.controller.command.EmployeeCommand;
 import com.example.web.model.EmployeeResponse;
 import com.example.web.service.HumanResourceService;
 import com.example.web.util.FetchType;
 import com.example.web.vo.Department;
 import com.example.web.vo.Employee;
+import com.example.web.vo.EmployeeBatchFile;
 import com.example.web.vo.Job;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,8 @@ public class EmployeeController {
         params.put("opt", opt);
         params.put("keyword", keyword);
 
+        // List<Employee> findByActive(Pageable pageable);
+        // List<Employee> employees = userRepository.getEmployeesPaginated(PageRequest.of(1, 10, Sort.by("id")));
         EmployeeResponse response = humanResourceService.getEmployeesPaginated(params, FetchType.EAGER, FetchType.LAZY, FetchType.EAGER);
 
         model.addAttribute("response", response);
@@ -88,5 +92,33 @@ public class EmployeeController {
         Employee employee = humanResourceService.getEmployeeById(employeeId, FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
 
         return employee;
+    }
+
+    @PostMapping("/batch-upload")
+    public String fileUpload(EmployeeBatchFileCommand employeeBatchFileCommand) throws Exception {
+
+        logger.info(employeeBatchFileCommand.getMultipartFile().getOriginalFilename());
+        logger.info(employeeBatchFileCommand.getTitle());
+
+        humanResourceService.insertBatchFile(employeeBatchFileCommand);
+
+        return "redirect:files";
+    }
+
+    @GetMapping("files")
+    public String files(Model model) {
+
+        List<EmployeeBatchFile> files = humanResourceService.getAllEmployeeFiles();
+
+        model.addAttribute("files", files);
+
+        return "employees/files";
+    }
+
+    @GetMapping("/batch-register")
+    public String addInBatch(@RequestParam("id") int fileId) throws Exception {
+        humanResourceService.registerEmployeeInBatch(fileId);
+
+        return "redirect:employees/files";
     }
 }
