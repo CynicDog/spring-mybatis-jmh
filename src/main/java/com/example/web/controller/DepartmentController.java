@@ -1,18 +1,18 @@
 package com.example.web.controller;
 
 import com.example.web.service.HumanResourceService;
+import com.example.web.util.FetchType;
 import com.example.web.vo.Department;
+import com.example.web.vo.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/dept")
@@ -50,7 +50,16 @@ public class DepartmentController {
     }
 
     @GetMapping("/detail")
-    public String detail() {
-        return "";
+    @ResponseBody
+    public Map<String, Object> detail(@RequestParam("id") int departmentId) {
+        // http get 'http://localhost:8081/dept/detail?id=20'
+
+        Department department = humanResourceService.getDepartmentById(departmentId, FetchType.EAGER);
+        List<Employee> employees = humanResourceService.getEmployeesByDepartmentId(departmentId, FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
+
+        return Map.of(
+                "department", department,
+                "employees", employees
+        );
     }
 }
