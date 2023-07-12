@@ -5,15 +5,19 @@ import com.example.web.controller.command.EmployeeCommand;
 import com.example.web.model.EmployeeResponse;
 import com.example.web.service.HumanResourceService;
 import com.example.web.util.FetchType;
+import com.example.web.view.EmployeesExcelView;
+import com.example.web.view.FileDownloadView;
 import com.example.web.vo.Department;
 import com.example.web.vo.Employee;
 import com.example.web.vo.EmployeeBatchFile;
 import com.example.web.vo.Job;
 import org.jboss.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.AbstractView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +27,19 @@ import java.util.Map;
 @RequestMapping("/emp")
 public class EmployeeController {
 
-    private final Logger logger = Logger.getLogger(EmployeeController.class);
+    @Value("${hr.employee.xls.save-directory}")
+    private String batchFileDirectory;
 
-    @Autowired
-    private HumanResourceService humanResourceService;
+    private final Logger logger = Logger.getLogger(EmployeeController.class);
+    private final FileDownloadView fileDownloadView;
+    private final HumanResourceService humanResourceService;
+    private final EmployeesExcelView employeesExcelView;
+
+    public EmployeeController(FileDownloadView fileDownloadView, HumanResourceService humanResourceService, EmployeesExcelView employeesExcelView) {
+        this.fileDownloadView = fileDownloadView;
+        this.humanResourceService = humanResourceService;
+        this.employeesExcelView = employeesExcelView;
+    }
 
     @GetMapping("/list")
     public String list(@RequestParam(name = "sort", required = false, defaultValue = "id") String sort,
@@ -97,15 +110,12 @@ public class EmployeeController {
     @PostMapping("/batch-upload")
     public String fileUpload(EmployeeBatchFileCommand employeeBatchFileCommand) throws Exception {
 
-        logger.info(employeeBatchFileCommand.getMultipartFile().getOriginalFilename());
-        logger.info(employeeBatchFileCommand.getTitle());
-
         humanResourceService.insertBatchFile(employeeBatchFileCommand);
 
         return "redirect:files";
     }
 
-    @GetMapping("files")
+    @GetMapping("/files")
     public String files(Model model) {
 
         List<EmployeeBatchFile> files = humanResourceService.getAllEmployeeFiles();
@@ -119,6 +129,30 @@ public class EmployeeController {
     public String addInBatch(@RequestParam("id") int fileId) throws Exception {
         humanResourceService.registerEmployeeInBatch(fileId);
 
-        return "redirect:employees/files";
+        return "redirect:files";
+    }
+
+    @GetMapping("/download")
+    public ModelAndView download(@RequestParam("id") int fileId) throws Exception {
+
+        EmployeeBatchFile employeeBatchFile = humanResourceService.getEmployeeBatchFileById(fileId);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setView(fileDownloadView);
+        modelAndView.addObject("directory", batchFileDirectory);
+        modelAndView.addObject("filename", employeeBatchFile.getName());
+
+        return modelAndView;
+    }
+
+    @GetMapping("/fetch-in-xls")
+    public ModelAndView fetchInXls() {
+        List<Employee> employees =humanResourceService.getAllEmployees(FetchType.LAZY, FetchType.EAGER, FetchType.EAGER);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setView(employeesExcelView);
+        modelAndView.addObject("entities", employees);
+
+        return modelAndView;
     }
 }
