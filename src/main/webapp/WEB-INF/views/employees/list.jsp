@@ -20,6 +20,7 @@
                 <div class="card-header">
                     Employees
                     <span class="float-end">
+                        <a href="fetch-in-xls" class="btn btn-outline-primary btn-sm">get in batch</a>
                         <a href="files" class="btn btn-outline-primary btn-sm mx-1">add in batch</a>
                         <a href="add" class="btn btn-primary btn-sm mx-1">add new employee</a>
                     </span>
