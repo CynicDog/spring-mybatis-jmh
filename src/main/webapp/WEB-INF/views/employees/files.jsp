@@ -38,7 +38,7 @@
                                 <td>${file.name}</td>
                                 <td>${file.added eq 'N' ? 'not yet' : 'done'}</td>
                                 <td>
-                                    <a href="batch-register?id=${file.id}" class="btn btn-primary btn-sm mx-1">add in batch</a>
+                                    <a href="batch-register?id=${file.id}" class="btn btn-primary btn-sm mx-1 ${file.added eq 'N' ? '' : 'disabled'}">add in batch</a>
                                     <a href="download?id=${file.id}" class="btn btn-outline-primary btn-sm mx-1">download</a>
                                 </td>
                             </tr>

@@ -19,7 +19,10 @@
             <div class="card shadow">
                 <div class="card-header">
                     Employees
-                    <a href="add" class="btn btn-primary btn-sm float-end">add new employee</a>
+                    <span class="float-end">
+                        <a href="files" class="btn btn-outline-primary btn-sm mx-1">add in batch</a>
+                        <a href="add" class="btn btn-primary btn-sm mx-1">add new employee</a>
+                    </span>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-start my-2">
@@ -74,24 +77,28 @@
                                     <a href="" class="page-link" onclick="changePage(event, 1)">First</a>
                                 </li>
                                 <li class="page-item ${response.pagination.first ? 'disabled': ''}">
-                                    <a class="page-link" href="" aria-label="Prev" onclick="changePage(event, ${response.pagination.prePage})">
+                                    <a class="page-link" href="" aria-label="Prev"
+                                       onclick="changePage(event, ${response.pagination.prePage})">
                                         <span aria-hidden="true">&laquo;</span>
                                         <span class="sr-only"></span>
                                     </a>
                                 </li>
-                                <c:forEach var="num" begin="${response.pagination.beginPage}" end="${response.pagination.endPage}">
+                                <c:forEach var="num" begin="${response.pagination.beginPage}"
+                                           end="${response.pagination.endPage}">
                                     <li class="page-item ${response.pagination.page eq num ? "active" : ""}">
                                         <a href="" class="page-link" onclick="changePage(event, ${num})">${num}</a>
                                     </li>
                                 </c:forEach>
                                 <li class="page-item ${response.pagination.last ? 'disabled': ''}">
-                                    <a class="page-link" href="" aria-label="Next" onclick="changePage(event, ${response.pagination.nextPage})">
+                                    <a class="page-link" href="" aria-label="Next"
+                                       onclick="changePage(event, ${response.pagination.nextPage})">
                                         <span aria-hidden="true">&raquo;</span>
                                         <span class="sr-only"></span>
                                     </a>
                                 </li>
                                 <li class="page-item ${response.pagination.last ? 'disabled': ''}">
-                                    <a href="" class="page-link" onclick="changePage(event, ${response.pagination.totalPages})">Last</a>
+                                    <a href="" class="page-link"
+                                       onclick="changePage(event, ${response.pagination.totalPages})">Last</a>
                                 </li>
                             </ul>
                         </nav>
