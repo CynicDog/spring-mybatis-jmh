@@ -332,6 +332,9 @@ public class HumanResourceService {
             employeeDao.insertEmployee(employee);
         }
 
+        employeeBatchFile.setAdded("Y");
+        employeeBatchFileDao.updateEmployeeBatchFile(employeeBatchFile);
+
         workbook.close();
     }
 

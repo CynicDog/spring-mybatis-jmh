@@ -2,6 +2,9 @@
 <mapper namespace="com.example.web.mapper.EmployeeBatchFileDao">
 
     <insert id="insertEmployeeBatchFile" parameterType="EmployeeBatchFile">
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
         insert into employee_files
             (file_title, file_name)
         values
@@ -40,7 +43,7 @@
         set
             file_title = #{title},
             file_name = #{name},
-            file_added = #{added},
+            file_added = #{added}
         where
             file_id = #{id}
     </update>
