@@ -50,24 +50,6 @@ public class HumanResourceService {
         this.employeeBatchFileDao = employeeBatchFileDao;
     }
 
-    public List<Department> getAllDepartments(FetchType arg1) {
-        List<Department> departments = departmentDao.getAllDepartments();
-
-        List<Department> departmentPopulated = departments.stream()
-                .map(department -> {
-                    if (department.getManager() != null && FetchType.EAGER.equals(arg1)) {
-                        department.setManager(employeeDao.getEmployeeById(department.getManager().getId()));
-                    }
-                    return department;
-                }).collect(Collectors.toList());
-
-        return departmentPopulated;
-    }
-
-    public List<Job> getAllJobs() {
-        return jobDao.getAllJobs();
-    }
-
     /**
      * Retrieves a list of employees by job ID, with options to fetch associated properties.
      *
@@ -102,6 +84,24 @@ public class HumanResourceService {
                 }).collect(Collectors.toList());
 
         return employeesPopulated;
+    }
+
+    public List<Department> getAllDepartments(FetchType arg1) {
+        List<Department> departments = departmentDao.getAllDepartments();
+
+        List<Department> departmentPopulated = departments.stream()
+                .map(department -> {
+                    if (department.getManager() != null && FetchType.EAGER.equals(arg1)) {
+                        department.setManager(employeeDao.getEmployeeById(department.getManager().getId()));
+                    }
+                    return department;
+                }).collect(Collectors.toList());
+
+        return departmentPopulated;
+    }
+
+    public List<Job> getAllJobs() {
+        return jobDao.getAllJobs();
     }
 
     public void registerJob(JobCommand jobCommand) {
@@ -313,14 +313,13 @@ public class HumanResourceService {
         for (int idx = 1; idx <= sheet.getLastRowNum(); idx++) {
             Row row = sheet.getRow(idx);
 
-            // TODO: Cannot get a STRING value from a NUMERIC cell [ java.lang.IllegalStateException: Cannot get a STRING value from a NUMERIC cell ]
             String firstName = row.getCell(0).getStringCellValue();
             String lastName = row.getCell(1).getStringCellValue();
             String email = row.getCell(2).getStringCellValue();
             String phoneNumber = row.getCell(3).getStringCellValue();
             Date hireDate = row.getCell(4).getDateCellValue();
             String jobId = row.getCell(5).getStringCellValue();
-            Double salary = Double.parseDouble(row.getCell(6).getStringCellValue());
+            Double salary = row.getCell(6).getNumericCellValue();
             Double commissionPct = row.getCell(7).getNumericCellValue();
             int managerId = (int) row.getCell(8).getNumericCellValue();
             int departmentId = (int) row.getCell(9).getNumericCellValue();
@@ -332,5 +331,12 @@ public class HumanResourceService {
 
             employeeDao.insertEmployee(employee);
         }
+
+        workbook.close();
+    }
+
+    public EmployeeBatchFile getEmployeeBatchFileById(int fileId) {
+
+        return employeeBatchFileDao.getEmployeeBatchFileById(fileId);
     }
 }
