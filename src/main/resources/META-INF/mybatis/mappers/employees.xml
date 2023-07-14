@@ -6,6 +6,7 @@
             employee_id     as id,
             first_name      as firstName,
             last_name       as lastName,
+            password,
             email,
             phone_number    as phoneNumber,
             hire_date       as hireDate,
@@ -25,6 +26,7 @@
             employee_id     as id,
             first_name      as firstName,
             last_name       as lastName,
+            password,
             email,
             phone_number    as phoneNumber,
             hire_date       as hireDate,
@@ -39,11 +41,32 @@
             employee_id = #{employee_id}
     </select>
 
+    <select id="getEmployeeByEmail" parameterType="string" resultType="Employee">
+        select
+            employee_id     as id,
+            first_name      as firstName,
+            last_name       as lastName,
+            password,
+            email,
+            phone_number    as phoneNumber,
+            hire_date       as hireDate,
+            job_id          as "job.id",
+            salary,
+            commission_pct  as commissionPct,
+            manager_id      as "manager.id",
+            department_id   as "department.id"
+        from
+            employees
+        where
+            email = #{email}
+    </select>
+
     <select id="getAllEmployees">
         select
             employee_id     as id,
             first_name      as firstName,
             last_name       as lastName,
+            password,
             email,
             phone_number    as phoneNumber,
             hire_date       as hireDate,
@@ -63,6 +86,7 @@
             employee_id     as id,
             first_name      as firstName,
             last_name       as lastName,
+            password,
             email,
             phone_number    as phoneNumber,
             hire_date       as hireDate,
@@ -81,10 +105,10 @@
 
     <insert id="insertEmployee" parameterType="Employee">
         insert into employees (
-        first_name, last_name, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id
+        first_name, last_name, password, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id
         )
         values (
-            #{firstName}, #{lastName}, #{email}, #{phoneNumber}, #{hireDate}, #{job.id}, #{salary}, #{commissionPct}, #{manager.id}, #{department.id}
+            #{firstName}, #{lastName}, #{password}, #{email}, #{phoneNumber}, #{hireDate}, #{job.id}, #{salary}, #{commissionPct}, #{manager.id}, #{department.id}
         )
     </insert>
 
@@ -118,6 +142,7 @@
                 E.employee_id       AS id,
                 E.first_name        AS firstName,
                 E.last_name         AS lastName,
+                E.password,
                 E.email,
                 E.phone_number      AS phoneNumber,
                 E.hire_date         AS hireDate,
@@ -161,6 +186,7 @@
                 E.employee_id       AS id,
                 E.first_name        AS firstName,
                 E.last_name         AS lastName,
+                E.password,
                 E.email,
                 E.phone_number      AS phoneNumber,
                 E.hire_date         AS hireDate,

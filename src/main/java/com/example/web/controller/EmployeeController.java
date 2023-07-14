@@ -82,7 +82,7 @@ public class EmployeeController {
 
         humanResourceService.registerEmployee(employeeCommand);
 
-        return "redirect:list";
+        return "redirect:/";
     }
 
     @GetMapping("/by-department")
@@ -147,7 +147,7 @@ public class EmployeeController {
 
     @GetMapping("/fetch-in-xls")
     public ModelAndView fetchInXls() {
-        List<Employee> employees =humanResourceService.getAllEmployees(FetchType.LAZY, FetchType.EAGER, FetchType.EAGER);
+        List<Employee> employees = humanResourceService.getAllEmployees(FetchType.LAZY, FetchType.EAGER, FetchType.EAGER);
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setView(employeesExcelView);
@@ -155,4 +155,16 @@ public class EmployeeController {
 
         return modelAndView;
     }
+
+    @GetMapping("/login")
+    public String loginPage() {
+
+        return "employees/login-form";
+    }
+
+//    @PostMapping("/login")
+//    public String login(@RequestParam("email") String email, @RequestParam("password") String password) {
+//
+//        return null;
+//    }
 }

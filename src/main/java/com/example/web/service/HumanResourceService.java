@@ -20,6 +20,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,12 +44,14 @@ public class HumanResourceService {
     private final EmployeeDao employeeDao;
     private final JobDao jobDao;
     private final EmployeeBatchFileDao employeeBatchFileDao;
+    private final PasswordEncoder passwordEncoder;
 
-    public HumanResourceService(DepartmentDao departmentDao, EmployeeDao employeeDao, JobDao jobDao, EmployeeBatchFileDao employeeBatchFileDao) {
+    public HumanResourceService(DepartmentDao departmentDao, EmployeeDao employeeDao, JobDao jobDao, EmployeeBatchFileDao employeeBatchFileDao, PasswordEncoder passwordEncoder) {
         this.departmentDao = departmentDao;
         this.employeeDao = employeeDao;
         this.jobDao = jobDao;
         this.employeeBatchFileDao = employeeBatchFileDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -170,6 +174,7 @@ public class HumanResourceService {
 //        BeanUtils.copyProperties(employeeCommand, employee);
 
         Employee employee = employeeCommand.toEmployee();
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
 
         if (employeeCommand.getJobId() != null) {
             employee.setJob(new Job(employeeCommand.getJobId()));
@@ -194,7 +199,7 @@ public class HumanResourceService {
         int rows = (int) params.get("rows");
         int page = (int) params.get("page");
 
-        Pagination pagination = new Pagination(rows, page, totalRows);
+        Pagination pagination = new Pagination(rows, 7, page, totalRows);
 
         int begin = pagination.getBegin();
         int end = pagination.getEnd();
@@ -237,7 +242,7 @@ public class HumanResourceService {
         int rows = (int) params.get("rows");
         int page = (int) params.get("page");
 
-        Pagination pagination = new Pagination(rows, page, totalRows);
+        Pagination pagination = new Pagination(rows, 7, page, totalRows);
 
         int begin = pagination.getBegin();
         int end = pagination.getEnd();
@@ -315,16 +320,17 @@ public class HumanResourceService {
 
             String firstName = row.getCell(0).getStringCellValue();
             String lastName = row.getCell(1).getStringCellValue();
-            String email = row.getCell(2).getStringCellValue();
-            String phoneNumber = row.getCell(3).getStringCellValue();
-            Date hireDate = row.getCell(4).getDateCellValue();
-            String jobId = row.getCell(5).getStringCellValue();
-            Double salary = row.getCell(6).getNumericCellValue();
-            Double commissionPct = row.getCell(7).getNumericCellValue();
-            int managerId = (int) row.getCell(8).getNumericCellValue();
-            int departmentId = (int) row.getCell(9).getNumericCellValue();
+            String password = row.getCell(2).getStringCellValue();
+            String email = row.getCell(3).getStringCellValue();
+            String phoneNumber = row.getCell(4).getStringCellValue();
+            Date hireDate = row.getCell(5).getDateCellValue();
+            String jobId = row.getCell(6).getStringCellValue();
+            Double salary = row.getCell(7).getNumericCellValue();
+            Double commissionPct = row.getCell(8).getNumericCellValue();
+            int managerId = (int) row.getCell(9).getNumericCellValue();
+            int departmentId = (int) row.getCell(10).getNumericCellValue();
 
-            Employee employee = new Employee(firstName, lastName, email, phoneNumber, hireDate, salary, commissionPct);
+            Employee employee = new Employee(firstName, lastName, password, email, phoneNumber, hireDate, salary, commissionPct);
             employee.setJob(jobDao.getJobById(jobId));
             employee.setManager(employeeDao.getEmployeeById(managerId));
             employee.setDepartment(departmentDao.getDepartmentById(departmentId));

@@ -1,20 +1,22 @@
 package com.example.web.controller.command;
 
-import com.example.web.vo.Department;
 import com.example.web.vo.Employee;
-import com.example.web.vo.Job;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Getter @Setter
+@Getter @Setter @Component
 public class EmployeeCommand {
 
     private String firstName;
 
     private String lastName;
+
+    private String password;
 
     private String email;
 
@@ -35,6 +37,6 @@ public class EmployeeCommand {
 
     public Employee toEmployee() {
         // Association properties are to be populated through setters in the service layer.
-        return new Employee(firstName, lastName, email, phoneNumber, hireDate, salary, commissionPct);
+        return new Employee(firstName, lastName, password, email, phoneNumber, hireDate, salary, commissionPct);
     }
 }

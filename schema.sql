@@ -2638,3 +2638,7 @@ ALTER TABLE departments ADD FOREIGN KEY (manager_id) REFERENCES employees (emplo
 ALTER TABLE job_history ADD FOREIGN KEY (employee_id) REFERENCES employees(employee_id);
 ALTER TABLE job_history ADD FOREIGN KEY (job_id) REFERENCES jobs(job_id);
 ALTER TABLE job_history ADD FOREIGN KEY (department_id) REFERENCES departments(department_id);
+
+# for Spring Security implementation
+ALTER TABLE employees ADD COLUMN password varchar(100) AFTER last_name;
+ALTER TABLE employees MODIFY COLUMN email varchar(100) NOT NULL, ADD CONSTRAINT uc_email UNIQUE (email);
