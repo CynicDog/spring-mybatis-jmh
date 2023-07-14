@@ -22,8 +22,9 @@ public class Pagination {
     private int begin;
     private int end;
 
-    public Pagination(int rows, int page, int totalRows) {
+    public Pagination(int rows, int pages, int page, int totalRows) {
         this.rows = rows;
+        this.pages = pages;
         this.page = page;
         this.totalRows = totalRows;
 
