@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
     <div class="container">
         <a class="navbar-brand" href="/">Human Resource</a>
@@ -11,26 +12,41 @@
                 <li class="nav-item">
                     <a class="nav-link ${menu eq 'home' ? 'active' : ''}" href="/">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link ${menu eq 'department' ? 'active' : ''}" href="/dept/list">Departments</a>
-                </li>
-                <li class="nav-ite ">
-                    <a class="nav-link ${menu eq 'job' ? 'active' : ''}" href="/job/list">Jobs</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link ${menu eq 'employee' ? 'active' : ''}" href="/emp/list">Employees</a>
-                </li>
+                <sec:authorize access="isAuthenticated()">
+                    <li class="nav-item">
+                        <a class="nav-link ${menu eq 'department' ? 'active' : ''}" href="/dept/list">Departments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${menu eq 'job' ? 'active' : ''}" href="/job/list">Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${menu eq 'employee' ? 'active' : ''}" href="/emp/list">Employees</a>
+                    </li>
+                </sec:authorize>
             </ul>
+            <span class="navbar-text">
+                <sec:authorize access="isAuthenticated()">
+                <strong class="text-white">
+                        <p class="my-1 mx-2">
+                            Welcome, <sec:authentication property="principal" var="employee"/> ${employee.firstName} ${employee.lastName}
+                        </p>
+                </strong>
+                </sec:authorize>
+            </span>
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/emp/login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/emp/logout">Logout</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/emp/add">Sign up</a>
-                </li>
+                <sec:authorize access="isAnonymous()">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/emp/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/emp/add">Sign up</a>
+                    </li>
+                </sec:authorize>
+                <sec:authorize access="isAuthenticated()">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/emp/logout">Logout</a>
+                    </li>
+                </sec:authorize>
             </ul>
         </div>
     </div>

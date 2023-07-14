@@ -2,6 +2,7 @@ package com.example.web.adviser;
 
 import org.jboss.logging.Logger;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -32,5 +33,11 @@ public class ExceptionHandlerAdvice {
         logger.error(e.getMessage(), e);
 
         return "error/database";
+    }
+
+    // `AccessDeniedException` is to be processed at the level of Spring Security, not of Spring MVC
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleException(AccessDeniedException e) {
+        throw e;
     }
 }
