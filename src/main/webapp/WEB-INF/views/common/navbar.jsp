@@ -23,13 +23,13 @@
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
+                    <a class="nav-link" href="/emp/login">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/logout">Logout</a>
+                    <a class="nav-link" href="/emp/logout">Logout</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/signup">Sign up</a>
+                    <a class="nav-link" href="/emp/add">Sign up</a>
                 </li>
             </ul>
         </div>

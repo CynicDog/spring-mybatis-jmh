@@ -72,8 +72,7 @@
                                     <th onclick="sortTable('numeric', 1)" class="th-hover">Identifier</th>
                                     <th onclick="sortTable('alphabetic', 2)" class="th-hover">Name</th>
                                     <th onclick="sortTable('alphabetic', 3)" class="th-hover">Job</th>
-                                    <th>Joined Date</th>
-                                    <th onclick="sortTable('numeric', 5)" class="th-hover">Salary</th>
+                                    <th onclick="sortTable('numeric', 4)" class="th-hover">Salary</th>
                                     <th></th>
                                 </tr>
                                 </thead>
@@ -189,8 +188,9 @@
         let clickedElement = document.querySelector("#dept-" + department_id);
         clickedElement.classList.add("active");
 
-        let xhr = new XMLHttpRequest();
+        document.querySelector("#employees-table tbody").innerHTML = "";
 
+        let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 let text = xhr.responseText;
@@ -212,7 +212,6 @@
                             <td>\${emp.id}</td>
                             <td>\${emp.firstName} \${emp.lastName}</td>
                             <td>\${emp.job.id}</td>
-                            <td>\${emp.hireDate}</td>
                             <td>\${emp.salary}</td>
                             <td><button class="btn btn-outline-primary btn-sm" onclick=detailsModal(\${emp.id})>details</td>
                         </tr>

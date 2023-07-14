@@ -42,6 +42,12 @@
                             </div>
                         </div>
                         <div class="row mb-3">
+                            <label class="col-sm-1 col-form-label text-end">Password</label>
+                            <div class="col-11 mb-3">
+                                <input type="password" class="form-control" name="password" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
                             <label class="col-sm-1 col-form-label text-end">Joined Date</label>
                             <div class="col-5 mb-3">
                                 <input type="date" class="form-control" name="hireDate" />
