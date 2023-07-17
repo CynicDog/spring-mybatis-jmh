@@ -32,7 +32,7 @@ public class ExceptionHandlerAdvice {
 
         logger.error(e.getMessage(), e);
 
-        return "error/database";
+        return "error/persistence";
     }
 
     // `AccessDeniedException` is to be processed at the level of Spring Security, not of Spring MVC
