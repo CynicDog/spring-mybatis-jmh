@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
     <div class="container">
         <a class="navbar-brand" href="/">Human Resource</a>
@@ -28,7 +28,8 @@
                 <sec:authorize access="isAuthenticated()">
                 <strong class="text-white">
                         <p class="my-1 mx-2">
-                            Welcome, <sec:authentication property="principal" var="employee"/> ${employee.firstName} ${employee.lastName}
+                            <sec:authentication property="principal" var="employee"/>
+                            Welcome, ${employee.firstName} ${employee.lastName}
                         </p>
                 </strong>
                 </sec:authorize>
@@ -43,6 +44,9 @@
                     </li>
                 </sec:authorize>
                 <sec:authorize access="isAuthenticated()">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/emp/info" >My Page</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/emp/logout">Logout</a>
                     </li>

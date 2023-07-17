@@ -18,6 +18,23 @@
         <div class="col-6">
             <div class="card shadow">
                 <div class="card-header">Login</div>
+                <c:choose>
+                    <c:when test="${param.error eq 'fail'}">
+                        <div class="alert alert-danger m-3">
+                            <strong>Bad Credentials.</strong>
+                        </div>
+                    </c:when>
+                    <c:when test="${param.error eq 'denied'}">
+                        <div class="alert alert-danger m-3">
+                            <strong>Access Denied. You may need to be authenticated first.</strong>
+                        </div>
+                    </c:when>
+                    <c:when test="${param.error eq 'forbidden'}">
+                        <div class="alert alert-danger m-3">
+                            <strong>Not allowed with the granted authority of yours</strong>
+                        </div>
+                    </c:when>
+                </c:choose>
                 <div class="card-body">
                     <form action="/emp/login" method="post">
                         <div class="form-group my-2">

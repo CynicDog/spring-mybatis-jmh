@@ -28,6 +28,7 @@ public class JobController {
     private HumanResourceService humanResourceService;
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('ADMIN')")
     public String list(Model model) {
 
         List<Job> jobs = humanResourceService.getAllJobs();
