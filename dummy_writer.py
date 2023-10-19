@@ -1,4 +1,5 @@
 import random
+import uuid
 
 def dummy(job: str, manager: int, dept: int):
     salary = round(random.uniform(3000.00, 10000.00), 2)  # Random salary between 3000 and 10000
@@ -7,7 +8,9 @@ def dummy(job: str, manager: int, dept: int):
     # Randomize names and email
     first_name = random.choice(["John", "Jane", "Robert", "Linda", "David", "Karen", "Claire", "David", "Sophie", "Clara", "Dwight", "Bobby", "Jaden", "Marie"])
     last_name = random.choice(["Smith", "Johnson", "Williams", "Brown", "Jones", "Turner", "Grant"])
-    email = first_name.lower() + "@example.com"
+
+    unique_id = str(uuid.uuid4())
+    email = first_name.lower() + f"-{unique_id}@example.com"
 
     # Randomize phone number
     phone = f"{random.randint(100, 999)}-{random.randint(1000, 9999)}"
@@ -54,7 +57,7 @@ job_manager_dept = [
 ]
 
 result = []
-for i in range(500, 55500):
+for i in range(500, 25500):
     job, manager, dept = random.choice(job_manager_dept)
     result.append(dummy(job, manager, dept))
 
