@@ -37,34 +37,16 @@ public class BenchmarkTest {
         humanResourceService = context.getBean(HumanResourceService.class);
     }
 
-//    @Benchmark @BenchmarkMode(Mode.AverageTime)
-//    @Fork(warmups = 1, value = 1)
-//    @Warmup(batchSize = -1, iterations = 3, time = 10, timeUnit = TimeUnit.MILLISECONDS)
-//    @Measurement(batchSize = -1, iterations = 15, time = 50, timeUnit = TimeUnit.MILLISECONDS)
-//    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-//    public void testGetEmployeesByJobId() throws Exception {
-//        humanResourceService.getEmployeesByJobId("ST_CLERK", FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
-//    }
-//
-//    @Benchmark @BenchmarkMode(Mode.AverageTime)
-//    @Fork(warmups = 1, value = 1)
-//    @Warmup(batchSize = -1, iterations = 3, time = 10, timeUnit = TimeUnit.MILLISECONDS)
-//    @Measurement(batchSize = -1, iterations = 10, time = 50, timeUnit = TimeUnit.MILLISECONDS)
-//    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-//    public void testGetAllEmployees() throws Exception {
-//        humanResourceService.getAllEmployees(FetchType.EAGER, FetchType.EAGER, FetchType.EAGER);
-//    }
-
     @Benchmark @BenchmarkMode(Mode.AverageTime)
     @Fork(warmups = 1, value = 1)
     @Warmup(batchSize = -1, iterations = 3, time = 10, timeUnit = TimeUnit.MILLISECONDS)
-    @Measurement(batchSize = -1, iterations = 10, time = 50, timeUnit = TimeUnit.MILLISECONDS)
+    @Measurement(batchSize = -1, iterations = 5, time = 50, timeUnit = TimeUnit.MILLISECONDS)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void testGetEmployeesPaginated() throws Exception {
 
         Map<String, Object> params = new HashMap<>();
         params.put("sort", "id");
-        params.put("rows", 50000);
+        params.put("rows", 25000);
         params.put("page", 1);
         params.put("opt", "");
         params.put("keyword", "");
@@ -75,13 +57,13 @@ public class BenchmarkTest {
     @Benchmark @BenchmarkMode(Mode.AverageTime)
     @Fork(warmups = 1, value = 1)
     @Warmup(batchSize = -1, iterations = 3, time = 10, timeUnit = TimeUnit.MILLISECONDS)
-    @Measurement(batchSize = -1, iterations = 10, time = 50, timeUnit = TimeUnit.MILLISECONDS)
+    @Measurement(batchSize = -1, iterations = 5, time = 50, timeUnit = TimeUnit.MILLISECONDS)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void testGetEmployeesPaginatedJoined() throws Exception {
 
         Map<String, Object> params = new HashMap<>();
         params.put("sort", "id");
-        params.put("rows", 50000);
+        params.put("rows", 25000);
         params.put("page", 1);
         params.put("opt", "");
         params.put("keyword", "");
